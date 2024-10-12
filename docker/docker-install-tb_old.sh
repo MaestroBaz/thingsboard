@@ -14,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#!/bin/bash
 
-# Parse arguments
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -58,7 +56,7 @@ checkFolders --create || exit $?
 if [ ! -z "${ADDITIONAL_STARTUP_SERVICES// }" ]; then
 
     COMPOSE_ARGS="\
-          -f docker-compose.yml -f docker-compose.volumes.yml ${ADDITIONAL_CACHE_ARGS} ${ADDITIONAL_COMPOSE_ARGS} ${ADDITIONAL_COMPOSE_QUEUE_ARGS} \
+          -f docker-compose.yml ${ADDITIONAL_CACHE_ARGS} ${ADDITIONAL_COMPOSE_ARGS} ${ADDITIONAL_COMPOSE_QUEUE_ARGS} \
           up -d ${ADDITIONAL_STARTUP_SERVICES}"
 
     case $COMPOSE_VERSION in
@@ -75,7 +73,7 @@ if [ ! -z "${ADDITIONAL_STARTUP_SERVICES// }" ]; then
 fi
 
 COMPOSE_ARGS="\
-      -f docker-compose.yml -f docker-compose.volumes.yml ${ADDITIONAL_CACHE_ARGS} ${ADDITIONAL_COMPOSE_ARGS} ${ADDITIONAL_COMPOSE_QUEUE_ARGS} \
+      -f docker-compose.yml ${ADDITIONAL_CACHE_ARGS} ${ADDITIONAL_COMPOSE_ARGS} ${ADDITIONAL_COMPOSE_QUEUE_ARGS} \
       run --no-deps --rm -e INSTALL_TB=true -e LOAD_DEMO=${loadDemo} \
       tb-core1"
 
@@ -90,3 +88,5 @@ case $COMPOSE_VERSION in
         # unknown option
     ;;
 esac
+
+

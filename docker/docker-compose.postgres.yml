@@ -14,19 +14,22 @@
 # limitations under the License.
 #
 
-version: '3.0'
+
 
 services:
   postgres:
     restart: always
     image: "postgres:15"
+    # command: ["sh", "-c", "sleep infinity"] ## Added for degugging
     ports:
     - "5432"
     environment:
       POSTGRES_DB: thingsboard
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./tb-node/postgres:/var/lib/postgresql/data
+      # - ./tb-node/postgres:/var/lib/postgresql/data
+      # - postgres_data:/var/lib/postgresql/data # Using volumes to persist the data instaed of bind mounts
+      - postgres-db-volume:/var/lib/postgresql/data
   tb-core1:
     env_file:
       - tb-node.postgres.env
@@ -47,3 +50,9 @@ services:
       - tb-node.postgres.env
     depends_on:
       - postgres
+# # Using volumes to persist the data instaed of bind mounts
+# volumes:
+#   postgres_data:
+volumes:
+  postgres-db-volume:
+    name: postgres_db_volume
