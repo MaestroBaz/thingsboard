@@ -139,6 +139,10 @@
                     <artifactId>dockerfile-maven-plugin</artifactId>
                     <version>${dockerfile-maven.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
