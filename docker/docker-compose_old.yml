@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# 
+
+
+
 
 services:
   zookeeper:
@@ -25,7 +27,6 @@ services:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zookeeper:2888:3888;zookeeper:2181
       ZOO_ADMINSERVER_ENABLED: "false"
-
   tb-js-executor:
     restart: always
     image: "${DOCKER_REPO}/${JS_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
@@ -33,10 +34,12 @@ services:
       replicas: 10
     env_file:
       - tb-js-executor.env
-
   tb-core1:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
+    # command: ["sh", "-c", "sleep infinity"] 
+    ## Uncomment this line to debug the container by keeping it running
+    ## To start a terminal inside a container, Use >> docker exec -it docker-tb-core1-1 sh
     ports:
       - "8080"
       - "7070"
@@ -53,14 +56,13 @@ services:
     env_file:
       - tb-node.env
     volumes:
-      - tb-config-volume:/config
-      - tb-log-volume:/var/log/thingsboard
+      - ./tb-node/conf:/config
+      - ./tb-node/log:/var/log/thingsboard
     depends_on:
       - zookeeper
       - tb-js-executor
       - tb-rule-engine1
       - tb-rule-engine2
-
   tb-core2:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
@@ -80,14 +82,13 @@ services:
     env_file:
       - tb-node.env
     volumes:
-      - tb-config-volume:/config
-      - tb-log-volume:/var/log/thingsboard
+      - ./tb-node/conf:/config
+      - ./tb-node/log:/var/log/thingsboard
     depends_on:
       - zookeeper
       - tb-js-executor
       - tb-rule-engine1
       - tb-rule-engine2
-
   tb-rule-engine1:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
@@ -105,12 +106,11 @@ services:
     env_file:
       - tb-node.env
     volumes:
-      - tb-config-volume:/config
-      - tb-log-volume:/var/log/thingsboard
+      - ./tb-node/conf:/config
+      - ./tb-node/log:/var/log/thingsboard
     depends_on:
       - zookeeper
       - tb-js-executor
-
   tb-rule-engine2:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
@@ -128,12 +128,11 @@ services:
     env_file:
       - tb-node.env
     volumes:
-      - tb-config-volume:/config
-      - tb-log-volume:/var/log/thingsboard
+      - ./tb-node/conf:/config
+      - ./tb-node/log:/var/log/thingsboard
     depends_on:
       - zookeeper
       - tb-js-executor
-
   tb-mqtt-transport1:
     restart: always
     image: "${DOCKER_REPO}/${MQTT_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
@@ -145,13 +144,12 @@ services:
     env_file:
       - tb-mqtt-transport.env
     volumes:
-      - tb-mqtt-transport-config-volume:/config
-      - tb-mqtt-transport-log-volume:/var/log/tb-mqtt-transport
+      - ./tb-transports/mqtt/conf:/config
+      - ./tb-transports/mqtt/log:/var/log/tb-mqtt-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-mqtt-transport2:
     restart: always
     image: "${DOCKER_REPO}/${MQTT_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
@@ -163,16 +161,20 @@ services:
     env_file:
       - tb-mqtt-transport.env
     volumes:
-      - tb-mqtt-transport-config-volume:/config
-      - tb-mqtt-transport-log-volume:/var/log/tb-mqtt-transport
+      - ./tb-transports/mqtt/conf:/config
+      - ./tb-transports/mqtt/log:/var/log/tb-mqtt-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-http-transport1:
     restart: always
     image: "${DOCKER_REPO}/${HTTP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    # command: ["sh", "-c", "sleep infinity"] ## Uncomment this line to debug the container by keeping it running
+    #docker-compose up -d tb-core1
+    #docker exec -it docker-tb-core1-1 sh
+    #id thingsboard
+    #docker run -it --rm your_thingsboard_image sh
     ports:
       - "8081"
     environment:
@@ -181,16 +183,19 @@ services:
     env_file:
       - tb-http-transport.env
     volumes:
-      - tb-http-transport-config-volume:/config
-      - tb-http-transport-log-volume:/var/log/tb-http-transport
+      - ./tb-transports/http/conf:/config
+      - ./tb-transports/http/log:/var/log/tb-http-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-http-transport2:
     restart: always
     image: "${DOCKER_REPO}/${HTTP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    # command: ["sh", "-c", "sleep infinity"] ## Uncomment this line to debug the container by keeping it running
+    #docker-compose up -d tb-core1
+    #docker exec -it docker-tb-core1-1 sh
+    #id thingsboard
     ports:
       - "8081"
     environment:
@@ -199,13 +204,12 @@ services:
     env_file:
       - tb-http-transport.env
     volumes:
-      - tb-http-transport-config-volume:/config
-      - tb-http-transport-log-volume:/var/log/tb-http-transport
+      - ./tb-transports/http/conf:/config
+      - ./tb-transports/http/log:/var/log/tb-http-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-coap-transport:
     restart: always
     image: "${DOCKER_REPO}/${COAP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
@@ -217,13 +221,12 @@ services:
     env_file:
       - tb-coap-transport.env
     volumes:
-      - tb-coap-transport-config-volume:/config
-      - tb-coap-transport-log-volume:/var/log/tb-coap-transport
+      - ./tb-transports/coap/conf:/config
+      - ./tb-transports/coap/log:/var/log/tb-coap-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-lwm2m-transport:
     restart: always
     image: "${DOCKER_REPO}/${LWM2M_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
@@ -236,13 +239,12 @@ services:
     env_file:
       - tb-lwm2m-transport.env
     volumes:
-      - tb-lwm2m-transport-config-volume:/config
-      - tb-lwm2m-transport-log-volume:/var/log/tb-lwm2m-transport
+      - ./tb-transports/lwm2m/conf:/config
+      - ./tb-transports/lwm2m/log:/var/log/tb-lwm2m-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-snmp-transport:
     restart: always
     image: "${DOCKER_REPO}/${SNMP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
@@ -254,13 +256,12 @@ services:
     env_file:
       - tb-snmp-transport.env
     volumes:
-      - tb-snmp-transport-config-volume:/config
-      - tb-snmp-transport-log-volume:/var/log/tb-snmp-transport
+      - ./tb-transports/snmp/conf:/config
+      - ./tb-transports/snmp/log:/var/log/tb-snmp-transport
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-  
   tb-web-ui1:
     restart: always
     image: "${DOCKER_REPO}/${WEB_UI_DOCKER_NAME}:${TB_VERSION}"
@@ -275,7 +276,6 @@ services:
       - "8080"
     env_file:
       - tb-web-ui.env
-
   tb-vc-executor1:
     restart: always
     image: "${DOCKER_REPO}/${TB_VC_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
@@ -287,13 +287,12 @@ services:
     env_file:
       - tb-vc-executor.env
     volumes:
-      - tb-vc-executor-config-volume:/config
-      - tb-vc-executor-log-volume:/var/log/tb-vc-executor
+      - ./tb-vc-executor/conf:/config
+      - ./tb-vc-executor/log:/var/log/tb-vc-executor
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   tb-vc-executor2:
     restart: always
     image: "${DOCKER_REPO}/${TB_VC_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
@@ -305,13 +304,12 @@ services:
     env_file:
       - tb-vc-executor.env
     volumes:
-      - tb-vc-executor-config-volume:/config
-      - tb-vc-executor-log-volume:/var/log/tb-vc-executor
+      - ./tb-vc-executor/conf:/config
+      - ./tb-vc-executor/log:/var/log/tb-vc-executor
     depends_on:
       - zookeeper
       - tb-core1
       - tb-core2
-
   haproxy:
     restart: always
     container_name: "${LOAD_BALANCER_NAME}"
@@ -343,35 +341,3 @@ services:
         - tb-mqtt-transport2
         - tb-http-transport1
         - tb-http-transport2
-
-volumes:
-
-  tb-log-volume:
-    name: ${TB_LOG_VOLUME}
-  tb-coap-transport-log-volume:
-    name: ${TB_COAP_TRANSPORT_LOG_VOLUME}
-  tb-lwm2m-transport-log-volume:
-    name: ${TB_LWM2M_TRANSPORT_LOG_VOLUME}
-  tb-http-transport-log-volume:
-    name: ${TB_HTTP_TRANSPORT_LOG_VOLUME}
-  tb-mqtt-transport-log-volume:
-    name: ${TB_MQTT_TRANSPORT_LOG_VOLUME}
-  tb-snmp-transport-log-volume:
-    name: ${TB_SNMP_TRANSPORT_LOG_VOLUME}
-  tb-vc-executor-log-volume:
-    name: ${TB_VC_EXECUTOR_LOG_VOLUME}
-
-  tb-config-volume:
-    name: ${TB_CONFIG_VOLUME}
-  tb-coap-transport-config-volume:
-    name: ${TB_COAP_TRANSPORT_CONFIG_VOLUME}
-  tb-lwm2m-transport-config-volume:
-    name: ${TB_LWM2M_TRANSPORT_CONFIG_VOLUME}
-  tb-http-transport-config-volume:
-    name: ${TB_HTTP_TRANSPORT_CONFIG_VOLUME}
-  tb-mqtt-transport-config-volume:
-    name: ${TB_MQTT_TRANSPORT_CONFIG_VOLUME}
-  tb-snmp-transport-config-volume:
-    name: ${TB_SNMP_TRANSPORT_CONFIG_VOLUME}
-  tb-vc-executor-config-volume:
-    name: ${TB_VC_EXECUTOR_CONFIG_VOLUME}

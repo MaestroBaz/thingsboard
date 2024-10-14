@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 
-version: '3.0'
 
-services:
-  postgres:
-    volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
 
-volumes:
-  postgres-db-volume:
-    external:
-      name: ${POSTGRES_DATA_VOLUME}
+# services:
+#   postgres:
+#     volumes:
+#       - postgres-db-volume:/var/lib/postgresql/data
+
+# volumes:
+#   postgres-db-volume:
+#     external:
+#       name: ${POSTGRES_DATA_VOLUME}
