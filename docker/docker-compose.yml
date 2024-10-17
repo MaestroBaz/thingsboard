@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# 
 
 services:
   zookeeper:
     restart: always
     image: "zookeeper:3.8.0"
+    pull_policy: missing
     ports:
       - "2181"
     environment:
@@ -29,6 +29,7 @@ services:
   tb-js-executor:
     restart: always
     image: "${DOCKER_REPO}/${JS_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     deploy:
       replicas: 10
     env_file:
@@ -37,6 +38,7 @@ services:
   tb-core1:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
       - "7070"
@@ -64,6 +66,7 @@ services:
   tb-core2:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
       - "7070"
@@ -91,6 +94,7 @@ services:
   tb-rule-engine1:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
     logging:
@@ -114,6 +118,7 @@ services:
   tb-rule-engine2:
     restart: always
     image: "${DOCKER_REPO}/${TB_NODE_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
     logging:
@@ -137,6 +142,7 @@ services:
   tb-mqtt-transport1:
     restart: always
     image: "${DOCKER_REPO}/${MQTT_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "1883"
     environment:
@@ -155,6 +161,7 @@ services:
   tb-mqtt-transport2:
     restart: always
     image: "${DOCKER_REPO}/${MQTT_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "1883"
     environment:
@@ -173,6 +180,7 @@ services:
   tb-http-transport1:
     restart: always
     image: "${DOCKER_REPO}/${HTTP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8081"
     environment:
@@ -191,6 +199,7 @@ services:
   tb-http-transport2:
     restart: always
     image: "${DOCKER_REPO}/${HTTP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8081"
     environment:
@@ -209,6 +218,7 @@ services:
   tb-coap-transport:
     restart: always
     image: "${DOCKER_REPO}/${COAP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "5683:5683/udp"
     environment:
@@ -227,6 +237,7 @@ services:
   tb-lwm2m-transport:
     restart: always
     image: "${DOCKER_REPO}/${LWM2M_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "5685:5685/udp"
       - "5686:5686/udp"
@@ -246,6 +257,7 @@ services:
   tb-snmp-transport:
     restart: always
     image: "${DOCKER_REPO}/${SNMP_TRANSPORT_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "1620:1620/udp"
     environment:
@@ -264,6 +276,7 @@ services:
   tb-web-ui1:
     restart: always
     image: "${DOCKER_REPO}/${WEB_UI_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
     env_file:
@@ -271,6 +284,7 @@ services:
   tb-web-ui2:
     restart: always
     image: "${DOCKER_REPO}/${WEB_UI_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8080"
     env_file:
@@ -279,6 +293,7 @@ services:
   tb-vc-executor1:
     restart: always
     image: "${DOCKER_REPO}/${TB_VC_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8081"
     environment:
@@ -297,6 +312,7 @@ services:
   tb-vc-executor2:
     restart: always
     image: "${DOCKER_REPO}/${TB_VC_EXECUTOR_DOCKER_NAME}:${TB_VERSION}"
+    pull_policy: missing
     ports:
       - "8081"
     environment:
@@ -316,6 +332,7 @@ services:
     restart: always
     container_name: "${LOAD_BALANCER_NAME}"
     image: thingsboard/haproxy-certbot:2.2.33-alpine
+    pull_policy: missing
     volumes:
      - ./haproxy/config:/config
      - ./haproxy/letsencrypt:/etc/letsencrypt

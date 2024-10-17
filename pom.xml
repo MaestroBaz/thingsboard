@@ -2274,13 +2274,22 @@
         </dependencies>
     </dependencyManagement>
 
-    <distributionManagement>
+    <!-- <distributionManagement>
         <repository>
             <id>thingsboard-repo-deploy</id>
             <name>ThingsBoard Repo Deployment</name>
             <url>https://repo.thingsboard.io/artifactory/libs-release-public</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement> -->
+    
+    <!-- Added to deploy to docker hub instead -->
+<distributionManagement>
+    <repository>
+        <id>docker-hub</id>
+        <name>Docker Hub Deployment</name>
+        <url>https://index.docker.io/v1/theiotguy</url>
+    </repository>
+</distributionManagement>
 
     <repositories>
         <repository>
