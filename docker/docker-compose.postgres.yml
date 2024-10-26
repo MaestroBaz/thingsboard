@@ -19,7 +19,7 @@
 services:
   postgres:
     restart: always
-    image: "postgres:15"
+    image: "postgres:16"
     # command: ["sh", "-c", "sleep infinity"] ## Added for degugging
     ports:
     - "5432"
